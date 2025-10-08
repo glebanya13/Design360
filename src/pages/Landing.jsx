@@ -42,8 +42,8 @@ export default function Landing() {
       <Header />
       <Hero />
       <Services />
-      <TZBanner />
-      <Portfolio />
+        <TZBanner />
+        <Portfolio />
       <Stats />
       <Process />
       <CTA />

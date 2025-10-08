@@ -1,297 +1,381 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { sendFormEmail } from '../services/emailService';
+import { sendExplanatoryToTelegram } from '../services/telegramService';
+import Header from '../components/landing/Header';
 import '../styles/TZ.css';
-import Step1Files from '../components/steps/Step1Files';
-import Step2Object from '../components/steps/Step2Object';
-import Step3Rooms from '../components/steps/Step3Rooms';
-import Step4Parts from '../components/steps/Step4Parts';
-import Step5Style from '../components/steps/Step5Style';
-import Step6Summary from '../components/steps/Step6Summary';
+import '../styles/Landing.css';
+
+// Импорт компонентов
+import {
+  StepIndicator,
+  SectionHeader,
+  NavigationButtons,
+  ObjectTypeSelector,
+  RoomSelector,
+  RoomParams,
+  ExplanatorySummary
+} from '../components';
 
 export default function TZ() {
-  const totalSteps = 6;
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    projectType: 'apartment',
-    files: [],
-    objectType: '',
-    area: '',
-    rooms: '',
-    roomsList: [],
-    specialRooms: '',
-    projectParts: [],
-    specialRequirements: '',
-    preferredStyle: '',
-    colorPreferences: '',
-    budget: '',
-    clientName: '',
-    clientPhone: '',
-    clientEmail: '',
-    objectAddress: '',
-    additionalInfo: ''
+    objectType: 'apartment',
+    totalArea: '',
+    roomsCount: '',
+    selectedRooms: [],
+    roomsData: {}
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [validationAttempts, setValidationAttempts] = useState({
+    step1: false,
+    step2: false,
+    step3: false,
+    step4: false
+  });
 
-  const dropRef = useRef(null);
+  const totalSteps = 4;
 
-  useEffect(() => {
-    const dropZone = dropRef.current;
-    if (!dropZone) return;
-
-    const preventDefaults = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-
-    const addHover = () => dropZone.classList.add('dragover');
-    const removeHover = () => dropZone.classList.remove('dragover');
-    const handleDrop = (e) => {
-      const dt = e.dataTransfer;
-      const files = Array.from(dt.files);
-      handleFiles(files);
-    };
-
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
-      dropZone.addEventListener(eventName, preventDefaults);
-    });
-    ['dragenter', 'dragover'].forEach((eventName) => {
-      dropZone.addEventListener(eventName, addHover);
-    });
-    ['dragleave', 'drop'].forEach((eventName) => {
-      dropZone.addEventListener(eventName, removeHover);
-    });
-    dropZone.addEventListener('drop', handleDrop);
-
-    return () => {
-      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
-        dropZone.removeEventListener(eventName, preventDefaults);
-      });
-      ['dragenter', 'dragover'].forEach((eventName) => {
-        dropZone.removeEventListener(eventName, addHover);
-      });
-      ['dragleave', 'drop'].forEach((eventName) => {
-        dropZone.removeEventListener(eventName, removeHover);
-      });
-      dropZone.removeEventListener('drop', handleDrop);
-    };
-  }, []);
-
-  const updateField = (key, value) => setFormData((prev) => ({ ...prev, [key]: value }));
-
-  const handleFiles = (files) => {
-    setFormData((prev) => ({ ...prev, files: [...prev.files, ...files] }));
-  };
-
-  const removeFile = (fileName) => {
-    setFormData((prev) => ({ ...prev, files: prev.files.filter((f) => f.name !== fileName) }));
+  const updateField = (key, value) => {
+    setFormData(prev => ({ ...prev, [key]: value }));
   };
 
   const nextStep = () => {
-    if (!validateStep(currentStep)) return;
-    if (currentStep < totalSteps) {
-      setCurrentStep((s) => s + 1);
+    // Отмечаем попытку валидации для текущего шага
+    setValidationAttempts(prev => ({
+      ...prev,
+      [`step${currentStep}`]: true
+    }));
+    
+    if (validateStep(currentStep) && currentStep < totalSteps) {
+      setCurrentStep(prev => prev + 1);
     }
   };
 
   const prevStep = () => {
-    if (currentStep > 1) setCurrentStep((s) => s - 1);
+    if (currentStep > 1) {
+      setCurrentStep(prev => prev - 1);
+    }
   };
-
-  const skipStep = () => nextStep();
 
   const validateStep = (step) => {
-    switch (step) {
-      case 2: {
-        if (!formData.objectType) {
-          alert('Пожалуйста, выберите тип объекта');
-          return false;
-        }
-        if (!formData.area) {
-          alert('Пожалуйста, укажите площадь объекта');
-          return false;
-        }
-        return true;
+    // Шаг 1: Тип объекта, общая площадь, количество комнат
+    if (step === 1) {
+      if (!formData.objectType) {
+        alert('Пожалуйста, выберите тип объекта');
+        return false;
       }
-      case 5: {
-        if (!formData.preferredStyle) {
-          alert('Пожалуйста, выберите предпочтительный стиль');
-          return false;
-        }
-        if (!formData.budget) {
-          alert('Пожалуйста, выберите бюджет');
-          return false;
-        }
-        return true;
+      if (!formData.totalArea || formData.totalArea.trim() === '') {
+        alert('Пожалуйста, укажите общую площадь');
+        return false;
       }
-      case 6: {
-        if (!formData.clientName) {
-          alert('Пожалуйста, укажите ваше ФИО');
-          return false;
-        }
-        if (!formData.clientPhone) {
-          alert('Пожалуйста, укажите ваш телефон');
-          return false;
-        }
-        if (!formData.clientEmail) {
-          alert('Пожалуйста, укажите ваш email');
-          return false;
-        }
-        return true;
+      if (parseFloat(formData.totalArea) <= 0) {
+        alert('Общая площадь должна быть больше 0');
+        return false;
       }
-      default:
-        return true;
+      if (!formData.roomsCount || formData.roomsCount.trim() === '') {
+        alert('Пожалуйста, укажите количество комнат');
+        return false;
+      }
+      if (parseInt(formData.roomsCount) <= 0) {
+        alert('Количество комнат должно быть больше 0');
+        return false;
+      }
     }
+
+    // Шаг 2: Выбор помещений
+    if (step === 2) {
+      if (formData.selectedRooms.length === 0) {
+        alert('Пожалуйста, выберите хотя бы одно помещение');
+        return false;
+      }
+      if (formData.roomsCount && parseInt(formData.roomsCount) > 0) {
+        const maxRooms = parseInt(formData.roomsCount);
+        if (formData.selectedRooms.length > maxRooms) {
+          alert(`Количество выбранных помещений (${formData.selectedRooms.length}) не может превышать указанное количество комнат (${maxRooms})`);
+          return false;
+        }
+      }
+    }
+
+    // Шаг 3: Параметры помещений
+    if (step === 3) {
+      const hasIncompleteRooms = formData.selectedRooms.some(roomId => {
+        const roomData = formData.roomsData[roomId] || {};
+        return !roomData.length || !roomData.width || !roomData.height || !roomData.purpose || !roomData.requirements ||
+               parseFloat(roomData.length) <= 0 || parseFloat(roomData.width) <= 0 || parseFloat(roomData.height) <= 0 ||
+               roomData.purpose.trim() === '' || roomData.requirements.trim() === '';
+      });
+
+      if (hasIncompleteRooms) {
+        alert('Пожалуйста, заполните все параметры выбранных помещений:\n- Длина, ширина и высота должны быть больше 0\n- Назначение помещения и особые требования обязательны');
+        return false;
+      }
+    }
+
+    // Шаг 4: Экспликация (все данные уже должны быть заполнены)
+    if (step === 4) {
+      const totalArea = getTotalArea();
+      if (parseFloat(totalArea) <= 0) {
+        alert('Не удалось рассчитать общую площадь. Проверьте параметры помещений.');
+        return false;
+      }
+    }
+
+    return true;
   };
 
-  const adaptProjectPartsForService = (parts) => {
-    if (!Array.isArray(parts)) return [];
-    const mapping = {
-      'planning': 'apr',
-      'concept': 'design',
-      'visualization': 'design',
-      'working-docs': 'working',
-      'lighting': 'engineering',
-      'furniture': 'design'
-      // 'author-supervision' not mapped in service template; skip
-    };
-    const mapped = new Set();
-    parts.forEach((p) => {
-      const m = mapping[p];
-      if (m) mapped.add(m);
+  // Функция для обновления параметров конкретного помещения
+  const updateRoomData = (roomId, params) => {
+    setFormData(prev => {
+      const currentRoomData = prev.roomsData[roomId] || {};
+      const newRoomData = { ...currentRoomData, ...params };
+      
+      // Пересчитываем площадь если изменились длина или ширина
+      if (params.length !== undefined || params.width !== undefined) {
+        const length = parseFloat(newRoomData.length || 0);
+        const width = parseFloat(newRoomData.width || 0);
+        newRoomData.area = (length * width).toFixed(1);
+      }
+      
+      return {
+        ...prev,
+        roomsData: {
+          ...prev.roomsData,
+          [roomId]: newRoomData
+        }
+      };
     });
-    return Array.from(mapped);
   };
 
-  const buildServicePayload = () => {
-    const totalArea = Number(formData.area || 0);
-    const adapted = {
-      ...formData,
-      projectParts: adaptProjectPartsForService(formData.projectParts),
-      // Wrap single list of uploaded files into categorized bucket expected by service
-      files: { docs: formData.files }
-    };
-    return { adapted, totalArea };
+
+  // Функция расчета общей площади
+  const getTotalArea = () => {
+    return Object.values(formData.roomsData).reduce((total, room) => {
+      return total + parseFloat(room.area || 0);
+    }, 0).toFixed(1);
   };
 
-  const submitForm = async () => {
-    if (!validateStep(6)) return;
-    if (isSubmitting) return;
-    try {
-      setIsSubmitting(true);
-      const { adapted, totalArea } = buildServicePayload();
-      const result = await sendFormEmail(adapted, totalArea);
-      if (result?.success) {
-        alert('Техническое задание отправлено в Telegram. Мы свяжемся с вами в течение 24 часов.');
-      } else {
-        alert('Не удалось отправить ТЗ. Попробуйте позже.');
-      }
-    } catch (err) {
-      alert('Произошла ошибка при отправке ТЗ. Попробуйте позже.');
-    } finally {
-      setIsSubmitting(false);
+  const selectAllRooms = () => {
+    const allRooms = ['living-room', 'kitchen', 'bedroom', 'bathroom', 'toilet', 'hallway', 'balcony', 'dressing-room'];
+    const maxRooms = formData.roomsCount ? parseInt(formData.roomsCount) : null;
+    
+    if (maxRooms && maxRooms < allRooms.length) {
+      // Если есть лимит, выбираем только первые N комнат
+      updateField('selectedRooms', allRooms.slice(0, maxRooms));
+    } else {
+      // Если лимита нет или он больше количества комнат, выбираем все
+      updateField('selectedRooms', allRooms);
     }
   };
 
-  const typeMap = {
-    apartment: 'Квартира',
-    studio: 'Студия',
-    house: 'Частный дом',
-    commercial: 'Коммерческое помещение'
+  const resetRoomParams = () => {
+    updateField('roomsData', {});
   };
 
-  const styleMap = {
-    'warm-minimalism': 'Теплый минимализм',
-    'urban-loft': 'Урбан-лофт',
-    scandinavian: 'Скандинавский',
-    japanese: 'Японский минимализм',
-    'industrial-light': 'Индастриал-лайт',
-    'modern-kitsch': 'Современный китч'
+  const exportToPDF = async () => {
+    if (isExporting) return;
+    
+    setIsExporting(true);
+    try {
+      const result = await sendExplanatoryToTelegram(formData);
+      alert(result.success ? `✅ ${result.message}` : `❌ ${result.message}`);
+    } catch (error) {
+      alert('❌ Произошла ошибка при отправке экспликации');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
-  const budgetMap = {
-    '100-300': '100-300 тыс. руб.',
-    '300-500': '300-500 тыс. руб.',
-    '500-800': '500-800 тыс. руб.',
-    '800-1200': '800-1200 тыс. руб.',
-    '1200+': '1.2 млн+ руб.'
+  const submitForm = () => {
+    if (validateStep(4)) {
+      alert('Экспликация помещений успешно создана!');
+    }
   };
 
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <div className="header-content">
-          <div className="logo"><Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>Дизайн360</Link></div>
-          <div className="progress-container">
-            <div className="step-indicator">Шаг <span>{currentStep}</span> из {totalSteps}</div>
-            <div className="progress-steps">
-              {Array.from({ length: totalSteps }).map((_, i) => {
-                const step = i + 1;
-                const classes = ['progress-step'];
-                if (step < currentStep) classes.push('completed');
-                if (step === currentStep) classes.push('active');
-                return <div key={step} className={classes.join(' ')} data-step={step} />;
-              })}
+    <div className="explanatory-container">
+      <Header />
+
+      <div className="main-container">
+        <StepIndicator currentStep={currentStep} />
+
+        <div className="content-grid">
+          {/* Шаг 1: Тип объекта */}
+          <div className={`content-section form-step ${currentStep === 1 ? 'active' : ''}`}>
+            <SectionHeader title="Тип объекта" />
+            
+            <ObjectTypeSelector 
+              selectedType={formData.objectType}
+              onSelect={(type) => updateField('objectType', type)}
+            />
+
+            <div className="param-row" style={{ marginTop: '16px' }}>
+              <div className="param-group">
+                <label className="param-label">
+                  Общая площадь (м²) <span style={{ color: 'red' }}>*</span>
+                </label>
+                <input
+                  type="number"
+                  className={`param-input ${validationAttempts.step1 && (!formData.totalArea || parseFloat(formData.totalArea) <= 0) ? 'error' : ''}`}
+                  value={formData.totalArea}
+                  onChange={(e) => updateField('totalArea', e.target.value)}
+                  placeholder="65"
+                  min="0.1"
+                  step="0.1"
+                />
+                {validationAttempts.step1 && (!formData.totalArea || parseFloat(formData.totalArea) <= 0) && (
+                  <div className="error-message" style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+                    Обязательное поле. Значение должно быть больше 0.
+                  </div>
+                )}
+              </div>
+              <div className="param-group">
+                <label className="param-label">
+                  Количество комнат <span style={{ color: 'red' }}>*</span>
+                </label>
+                <input
+                  type="number"
+                  className={`param-input ${validationAttempts.step1 && (!formData.roomsCount || parseInt(formData.roomsCount) <= 0) ? 'error' : ''}`}
+                  value={formData.roomsCount}
+                  onChange={(e) => updateField('roomsCount', e.target.value)}
+                  placeholder="3"
+                  min="1"
+                />
+                {validationAttempts.step1 && (!formData.roomsCount || parseInt(formData.roomsCount) <= 0) && (
+                  <div className="error-message" style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+                    Обязательное поле. Значение должно быть больше 0.
+                  </div>
+                )}
+              </div>
             </div>
+
+            <NavigationButtons onPrev={prevStep} onNext={nextStep} showPrev={false} />
+          </div>
+
+          {/* Шаг 2: Выбор помещений */}
+          <div className={`content-section form-step ${currentStep === 2 ? 'active' : ''}`}>
+            <SectionHeader 
+              title="Помещения для экспликации"
+              actions={
+                <button className="btn btn-secondary" onClick={selectAllRooms}>
+                  Выбрать все
+                </button>
+              }
+            />
+
+            {validationAttempts.step2 && formData.selectedRooms.length === 0 && (
+              <div className="validation-message" style={{ 
+                marginBottom: '16px', 
+                padding: '12px', 
+                backgroundColor: '#fef2f2', 
+                border: '1px solid #fecaca',
+                borderRadius: '8px',
+                fontSize: '14px',
+                color: '#dc2626'
+              }}>
+                <strong>⚠️ Обязательно:</strong> Выберите хотя бы одно помещение для создания экспликации
+              </div>
+            )}
+
+            <RoomSelector 
+              selectedRooms={formData.selectedRooms}
+              onToggleRoom={(roomId) => {
+                const newSelected = formData.selectedRooms.includes(roomId)
+                  ? formData.selectedRooms.filter(r => r !== roomId)
+                  : [...formData.selectedRooms, roomId];
+                updateField('selectedRooms', newSelected);
+              }}
+              onSelectAll={selectAllRooms}
+              maxRooms={formData.roomsCount ? parseInt(formData.roomsCount) : null}
+            />
+
+            <NavigationButtons onPrev={prevStep} onNext={nextStep} />
+          </div>
+
+          {/* Шаг 3: Параметры помещений */}
+          <div className={`content-section form-step ${currentStep === 3 ? 'active' : ''}`}>
+            <SectionHeader 
+              title="Параметры помещений"
+              actions={
+                <button className="btn btn-secondary" onClick={resetRoomParams}>
+                  Сбросить
+                </button>
+              }
+            />
+
+            {(() => {
+              const hasIncompleteRooms = formData.selectedRooms.some(roomId => {
+                const roomData = formData.roomsData[roomId] || {};
+                return !roomData.length || !roomData.width || !roomData.height || !roomData.purpose || !roomData.requirements ||
+                       parseFloat(roomData.length) <= 0 || parseFloat(roomData.width) <= 0 || parseFloat(roomData.height) <= 0 ||
+                       roomData.purpose.trim() === '' || roomData.requirements.trim() === '';
+              });
+
+              return validationAttempts.step3 && hasIncompleteRooms && (
+                <div className="validation-message" style={{ 
+                  marginBottom: '16px', 
+                  padding: '12px', 
+                  backgroundColor: '#fef2f2', 
+                  border: '1px solid #fecaca',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  color: '#dc2626'
+                }}>
+                  <strong>⚠️ Обязательно:</strong> Заполните все параметры выбранных помещений:<br/>
+                  • Длина, ширина и высота должны быть больше 0<br/>
+                  • Назначение помещения и особые требования обязательны
+                </div>
+              );
+            })()}
+
+            {formData.selectedRooms.map(roomId => (
+              <RoomParams
+                key={roomId}
+                roomId={roomId}
+                roomData={formData.roomsData[roomId] || {}}
+                onUpdate={updateRoomData}
+              />
+            ))}
+
+            <NavigationButtons onPrev={prevStep} onNext={nextStep} />
+          </div>
+
+          {/* Шаг 4: Экспликация по ГОСТ */}
+          <div className={`content-section form-step ${currentStep === 4 ? 'active' : ''}`}>
+            <SectionHeader 
+              title="Экспликация помещений"
+              actions={
+                <button 
+                  className="btn btn-primary" 
+                  onClick={exportToPDF}
+                  disabled={isExporting}
+                >
+                  {isExporting ? 'Отправка...' : 'Экспорт в PDF'}
+                </button>
+              }
+            />
+
+            <ExplanatorySummary 
+              selectedRooms={formData.selectedRooms}
+              roomsData={formData.roomsData}
+              totalArea={getTotalArea()}
+            />
+
+            <div style={{ marginTop: '16px', fontSize: '12px', color: 'var(--text-light)' }}>
+              <p>
+                <strong>Примечание:</strong> Экспликация составлена в соответствии с ГОСТ 21.501-2018 
+                "Правила выполнения рабочей документации архитектурных и конструктивных решений"
+              </p>
+            </div>
+
+            <NavigationButtons 
+              onPrev={prevStep} 
+              onNext={submitForm} 
+              nextText="Завершить"
+            />
           </div>
         </div>
-      </header>
-
-      <main className="main-content">
-        <div className="quick-actions">
-          {[
-            { key: 'apartment', icon: '🏢', title: 'Квартира/Студия', desc: 'Для аренды или проживания' },
-            { key: 'house', icon: '🏠', title: 'Частный дом', desc: 'Коттедж, таунхаус, вилла' },
-            { key: 'commercial', icon: '🏪', title: 'Коммерция', desc: 'Офис, магазин, ресторан' }
-          ].map((opt) => (
-            <div
-              key={opt.key}
-              className={`quick-action-card ${formData.projectType === opt.key ? 'active' : ''}`}
-              onClick={() => updateField('projectType', opt.key)}
-            >
-              <div className="action-icon">{opt.icon}</div>
-              <div className="action-title">{opt.title}</div>
-              <div className="action-description">{opt.desc}</div>
-            </div>
-          ))}
-        </div>
-
-        <Step1Files currentStep={currentStep} formData={formData} dropRef={dropRef} handleFiles={handleFiles} removeFile={removeFile} skipStep={skipStep} nextStep={nextStep} />
-
-        <Step2Object currentStep={currentStep} formData={formData} updateField={updateField} prevStep={prevStep} nextStep={nextStep} />
-
-        <Step3Rooms currentStep={currentStep} formData={formData} setFormData={setFormData} updateField={updateField} prevStep={prevStep} nextStep={nextStep} />
-
-        <Step4Parts currentStep={currentStep} formData={formData} setFormData={setFormData} updateField={updateField} prevStep={prevStep} nextStep={nextStep} />
-
-        <Step5Style currentStep={currentStep} formData={formData} updateField={updateField} budgetMap={budgetMap} prevStep={prevStep} nextStep={nextStep} />
-
-        <Step6Summary currentStep={currentStep} formData={{...formData, updateField}} typeMap={typeMap} styleMap={styleMap} budgetMap={budgetMap} prevStep={prevStep} submitForm={submitForm} isSubmitting={isSubmitting} />
-
-        {/* Предпросмотр следующих шагов */}
-        <div className="steps-preview">
-          {[
-            { icon: '📁', title: 'Файлы', desc: 'Загрузка материалов' },
-            { icon: '🏠', title: 'Тип объекта', desc: 'Параметры объекта' },
-            { icon: '🚪', title: 'Помещения', desc: 'Выбор комнат' },
-            { icon: '📐', title: 'Состав проекта', desc: 'Этапы работы' },
-            { icon: '🎨', title: 'Стиль и бюджет', desc: 'Визуальные предпочтения' },
-            { icon: '📊', title: 'Сводка', desc: 'Проверка и контакты' }
-          ].map((step, index) => {
-            const stepNumber = index + 1;
-            const classes = ['step-preview-card'];
-            if (stepNumber === currentStep) classes.push('current');
-            else if (stepNumber > currentStep) classes.push('coming');
-            return (
-              <div key={step.title} className={classes.join(' ')}>
-                <div className="step-preview-icon">{step.icon}</div>
-                <div className="action-title">{step.title}</div>
-                <div className="action-description">{step.desc}</div>
-              </div>
-            );
-          })}
-        </div>
-      </main>
+      </div>
     </div>
   );
 }

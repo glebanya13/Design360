@@ -9,12 +9,6 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Landing />} />
-        {false && (
-          <Route
-            path="/form"
-            element={null}
-          />
-        )}
         <Route path="/tz" element={<TZ />} />
         <Route path="*" element={<div style={{ padding: 24 }}>Страница не найдена. <Link to="/">На главную</Link></div>} />
       </Routes>
