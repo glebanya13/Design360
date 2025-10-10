@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import '../styles/Landing.css';
-import Header from '../components/landing/Header';
+import '../styles/TZNew.css';
+import Header from '../components/form/Header';
 import Hero from '../components/landing/Hero';
 import Services from '../components/landing/Services';
 import TZBanner from '../components/landing/TZBanner';
