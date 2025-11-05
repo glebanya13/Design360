@@ -1,0 +1,9 @@
+{
+  "/(public)/realtors/page": "app/(public)/realtors/page.js",
+  "/(public)/page": "app/(public)/page.js",
+  "/(public)/catalog/page": "app/(public)/catalog/page.js",
+  "/(public)/services/page": "app/(public)/services/page.js",
+  "/(public)/elektrosnabzhenie/page": "app/(public)/elektrosnabzhenie/page.js",
+  "/(public)/design-interior/page": "app/(public)/design-interior/page.js",
+  "/(public)/tz/page": "app/(public)/tz/page.js"
+}
