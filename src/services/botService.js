@@ -1,7 +1,17 @@
 const BOT_CONFIG = {
   BOT_TOKEN: '8304590877:AAEfblij32-TzdrBtCa4HNEyTu84ADUW4wY',
-  CHAT_ID: '522977101',
+  CHAT_ID:  '572193621', //'522977101',
   API_URL: 'https://api.telegram.org/bot'
+};
+
+const escapeHtml = (text) => {
+  if (!text) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 };
 
 export const sendMessageToBot = async (message) => {
@@ -19,7 +29,10 @@ export const sendMessageToBot = async (message) => {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData.description || `HTTP error! status: ${response.status}`;
+      console.error('Telegram API error:', errorData);
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
@@ -58,7 +71,11 @@ export const formatFormDataForBot = (formData) => {
     roomsDetails = selectedRooms.map(roomId => {
       const roomName = roomTypeNames[roomId] || roomId;
       const params = roomParams[roomId] || {};
-      return `• ${roomName}: ${params.area || '0.0'} м² (${params.length || '0'}×${params.width || '0'}×${params.height || '0'} м)`;
+      const length = params.length?.toString() || '0';
+      const width = params.width?.toString() || '0';
+      const height = params.height?.toString() || '0';
+      const area = params.area?.toString() || '0.0';
+      return `• ${escapeHtml(roomName)}: ${escapeHtml(area)} м² (${escapeHtml(length)}×${escapeHtml(width)}×${escapeHtml(height)} м)`;
     }).join('\n');
   }
 
@@ -67,36 +84,69 @@ export const formatFormDataForBot = (formData) => {
     roomsFullDetails = selectedRooms.map(roomId => {
       const roomName = roomTypeNames[roomId] || roomId;
       const params = roomParams[roomId] || {};
-      return `\n🏠 <b>${roomName}</b>:
-📐 Размеры: ${params.length || '0'} × ${params.width || '0'} × ${params.height || '0'} м
-📏 Площадь: ${params.area || '0.0'} м²
-🎯 Назначение: ${params.purpose || 'Не указано'}
-⚙️ Требования: ${params.requirements || 'Не указаны'}`;
+      const length = params.length?.toString() || '0';
+      const width = params.width?.toString() || '0';
+      const height = params.height?.toString() || '0';
+      const area = params.area?.toString() || '0.0';
+      const purpose = escapeHtml(params.purpose || 'Не указано');
+      const requirements = escapeHtml(params.requirements || 'Не указаны');
+      return `\n🏠 <b>${escapeHtml(roomName)}</b>:
+📐 Размеры: ${escapeHtml(length)} × ${escapeHtml(width)} × ${escapeHtml(height)} м
+📏 Площадь: ${escapeHtml(area)} м²
+🎯 Назначение: ${purpose}
+⚙️ Требования: ${requirements}`;
     }).join('\n');
   }
 
   const totalCalculatedArea = selectedRooms.reduce((total, roomId) => {
     const params = roomParams[roomId] || {};
-    return total + (parseFloat(params.area) || 0);
+    const area = params.area?.toString() || '0';
+    return total + (parseFloat(area) || 0);
   }, 0).toFixed(1);
 
-  const message = `
-🏠 <b>ЭКСПЛИКАЦИЯ ПОМЕЩЕНИЙ ПО ГОСТ 21.501-2018</b>
+  const objectTypeName = escapeHtml(objectTypeNames[objectType] || objectType);
+  const dateStr = new Date().toLocaleString('ru-RU');
 
-📋 <b>Тип объекта:</b> ${objectTypeNames[objectType] || objectType}
-📐 <b>Общая площадь:</b> ${totalCalculatedArea} м²
-🚪 <b>Количество комнат:</b> ${roomsCount}
+  const message = `🏠 <b>ЭКСПЛИКАЦИЯ ПОМЕЩЕНИЙ ПО ГОСТ 21.501-2018</b>
+
+📋 <b>Тип объекта:</b> ${objectTypeName}
+📐 <b>Общая площадь:</b> ${escapeHtml(totalCalculatedArea)} м²
+🚪 <b>Количество комнат:</b> ${escapeHtml(roomsCount)}
 
 📊 <b>КРАТКАЯ СВОДКА:</b>
 ${roomsDetails || '• Данные не заполнены'}
 
 📋 <b>ПОДРОБНАЯ ИНФОРМАЦИЯ О ПОМЕЩЕНИЯХ:</b>${roomsFullDetails || '\n• Данные не заполнены'}
 
-📈 <b>ИТОГО:</b> ${totalCalculatedArea} м²
+📈 <b>ИТОГО:</b> ${escapeHtml(totalCalculatedArea)} м²
 
-📅 <b>Дата создания:</b> ${new Date().toLocaleString('ru-RU')}
-🔗 <b>Источник:</b> Дизайн360 - Экспликация помещений
-  `.trim();
+📅 <b>Дата создания:</b> ${escapeHtml(dateStr)}
+🔗 <b>Источник:</b> Дизайн360 - Экспликация помещений`.trim();
+
+  // Telegram ограничение на длину сообщения - 4096 символов
+  if (message.length > 4096) {
+    // Если сообщение слишком длинное, обрезаем roomsFullDetails
+    const shortRoomsDetails = selectedRooms.map(roomId => {
+      const roomName = roomTypeNames[roomId] || roomId;
+      const params = roomParams[roomId] || {};
+      const area = params.area?.toString() || '0.0';
+      return `• ${escapeHtml(roomName)}: ${escapeHtml(area)} м²`;
+    }).join('\n');
+
+    return `🏠 <b>ЭКСПЛИКАЦИЯ ПОМЕЩЕНИЙ ПО ГОСТ 21.501-2018</b>
+
+📋 <b>Тип объекта:</b> ${objectTypeName}
+📐 <b>Общая площадь:</b> ${escapeHtml(totalCalculatedArea)} м²
+🚪 <b>Количество комнат:</b> ${escapeHtml(roomsCount)}
+
+📊 <b>СВОДКА:</b>
+${shortRoomsDetails || '• Данные не заполнены'}
+
+📈 <b>ИТОГО:</b> ${escapeHtml(totalCalculatedArea)} м²
+
+📅 <b>Дата создания:</b> ${escapeHtml(dateStr)}
+🔗 <b>Источник:</b> Дизайн360 - Экспликация помещений`.trim();
+  }
 
   return message;
 };
@@ -121,9 +171,4 @@ export const submitFormToBot = async (formData) => {
       message: 'Произошла ошибка при отправке заявки. Попробуйте еще раз или свяжитесь с нами напрямую.'
     };
   }
-};
-
-export const checkBotConfig = () => {
-  return BOT_CONFIG.BOT_TOKEN !== 'YOUR_BOT_TOKEN_HERE' && 
-         BOT_CONFIG.CHAT_ID !== 'YOUR_CHAT_ID_HERE';
 };

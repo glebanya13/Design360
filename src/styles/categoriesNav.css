@@ -1,0 +1,76 @@
+/* Стили для навигации по категориям */
+.categories-nav {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  margin: 0;
+  position: sticky;
+  top: 44px; /* Высота header (app-header) */
+  z-index: 99; /* Ниже чем header (z-index: 1000) */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.categories-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.categories-list::-webkit-scrollbar {
+  display: none;
+}
+
+.categories-list li {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.categories-list li button,
+.categories-list li a {
+  display: block;
+  padding: 12px 20px;
+  color: var(--text-light);
+  text-decoration: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.categories-list li button:hover,
+.categories-list li a:hover {
+  color: var(--primary);
+  background-color: var(--background);
+}
+
+.categories-list li button.active,
+.categories-list li a.active {
+  color: var(--primary);
+  background-color: var(--background);
+  border-bottom: 2px solid var(--primary);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .categories-list li button,
+  .categories-list li a {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .categories-list li button,
+  .categories-list li a {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}

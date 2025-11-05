@@ -1,0 +1,164 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Диван \"Комфорт\"",
+      "slug": "divan-komfort",
+      "price": 45000,
+      "category": "Мебель",
+      "subcategory": "Диваны",
+      "image": "/images/sofa.svg",
+      "description": "Удобный диван для гостиной",
+      "inStock": true,
+      "badge": "hit"
+    },
+    {
+      "id": 2,
+      "name": "Лампа \"Свет\"",
+      "slug": "lampa-svet",
+      "price": 3500,
+      "category": "Освещение",
+      "image": "/images/lighting.svg",
+      "description": "Современная настольная лампа",
+      "inStock": true,
+      "badge": "new"
+    },
+    {
+      "id": 3,
+      "name": "Стол \"Рабочий\"",
+      "slug": "stol-rabochij",
+      "price": 25000,
+      "category": "Мебель",
+      "subcategory": "Столы",
+      "image": "/images/table.svg",
+      "description": "Письменный стол из дерева",
+      "inStock": true
+    },
+    {
+      "id": 4,
+      "name": "Кресло \"Уют\"",
+      "slug": "kreslo-uyut",
+      "price": 18000,
+      "oldPrice": 22000,
+      "category": "Мебель",
+      "subcategory": "Кресла",
+      "image": "/images/chairs.svg",
+      "description": "Мягкое кресло для отдыха",
+      "inStock": true,
+      "badge": "sale"
+    },
+    {
+      "id": 5,
+      "name": "Картина \"Абстракция\"",
+      "slug": "kartina-abstrakciya",
+      "price": 8000,
+      "category": "Декор",
+      "image": "/images/painting.svg",
+      "description": "Современная абстрактная картина",
+      "inStock": true
+    },
+    {
+      "id": 6,
+      "name": "Шторы \"Элегант\"",
+      "slug": "shtory-elegant",
+      "price": 12000,
+      "category": "Текстиль",
+      "image": "/images/curtains.svg",
+      "description": "Элегантные шторы для гостиной",
+      "inStock": true
+    },
+    {
+      "id": 7,
+      "name": "Люстра \"Кристалл\"",
+      "slug": "lyustra-kristall",
+      "price": 35000,
+      "category": "Освещение",
+      "image": "/images/chandelier.svg",
+      "description": "Роскошная хрустальная люстра",
+      "inStock": true,
+      "badge": "exclusive"
+    },
+    {
+      "id": 8,
+      "name": "Ковер \"Персидский\"",
+      "slug": "kover-persidskij",
+      "price": 28000,
+      "category": "Текстиль",
+      "image": "/images/carpet.svg",
+      "description": "Настоящий персидский ковер",
+      "inStock": true
+    },
+    {
+      "id": 9,
+      "name": "Стул \"Офисный\"",
+      "slug": "stul-ofisnyj",
+      "price": 15000,
+      "category": "Мебель",
+      "subcategory": "Стулья",
+      "image": "/images/chair.svg",
+      "description": "Эргономичный офисный стул",
+      "inStock": true
+    },
+    {
+      "id": 10,
+      "name": "Картина \"Модерн\"",
+      "slug": "kartina-modern",
+      "price": 12000,
+      "category": "Декор",
+      "image": "/images/painting.svg",
+      "description": "Современная картина в стиле модерн",
+      "inStock": false
+    },
+    {
+      "id": 11,
+      "name": "Торшер \"Светильник\"",
+      "slug": "torsher-svetilnik",
+      "price": 8500,
+      "category": "Освещение",
+      "image": "/images/floor-lamp.svg",
+      "description": "Современный торшер для гостиной",
+      "inStock": true
+    },
+    {
+      "id": 12,
+      "name": "Подушка \"Декоративная\"",
+      "slug": "podushka-dekorativnaya",
+      "price": 2500,
+      "category": "Текстиль",
+      "image": "/images/pillow.svg",
+      "description": "Декоративная подушка для дивана",
+      "inStock": true,
+      "badge": "new"
+    }
+  ],
+  "categories": [
+    {
+      "id": "all",
+      "name": "Все категории",
+      "count": 12
+    },
+    {
+      "id": "furniture",
+      "name": "Мебель",
+      "count": 5
+    },
+    {
+      "id": "lighting",
+      "name": "Освещение",
+      "count": 3
+    },
+    {
+      "id": "decor",
+      "name": "Декор",
+      "count": 2
+    },
+    {
+      "id": "textile",
+      "name": "Текстиль",
+      "count": 3
+    }
+  ]
+}
+
+
+

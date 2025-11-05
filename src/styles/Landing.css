@@ -1,674 +1,252 @@
-.landing .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
+/* Стили для главной страницы */
+/* ВАЖНО: Стили для .app-header находятся в header.css */
 
-
-.landing header {
-    background: var(--surface);
-    box-shadow: var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.landing .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-}
-
-.landing .logo {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.landing .logo-icon { font-size: 2rem; }
-
-.landing nav ul { display: flex; list-style: none; gap: 2rem; }
-.landing nav a { text-decoration: none; color: var(--text); font-weight: 500; transition: color 0.2s ease; }
-.landing nav a:hover { color: var(--primary); }
-
-.landing .header-actions { display: flex; gap: 1rem; }
-
-.landing .btn {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 1rem;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-}
-
-.landing .btn-primary { background: var(--primary); color: white; }
-.landing .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.landing .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
-.landing .btn-outline:hover { background: var(--primary); color: white; }
-.landing .btn-accent { background: var(--accent); color: white; }
-.landing .btn-accent:hover { background: #e58e0b; transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-
-
-.landing .hero {
-    background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
+/* Герой секция */
+.main-hero {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
-    padding: 6rem 0;
+    padding: 100px 20px;
     text-align: center;
-    position: relative;
-    overflow: hidden;
 }
 
-.landing .hero::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.1"><polygon fill="white" points="0,1000 1000,0 1000,1000"/></svg>');
-    background-size: cover;
+.hero-content {
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
-.landing .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
-.landing .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2; }
-.landing .hero p { font-size: 1.25rem; margin-bottom: 2.5rem; opacity: 0.9; }
-.landing .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-.landing .hero .btn { padding: 1rem 2rem; font-size: 1.1rem; }
-
-/* Sections */
-.landing .section { 
-    padding: 5rem 0; 
-}
-
-.landing .section-header { 
-    text-align: center; 
-    margin-bottom: 4rem; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.landing .section-title { 
-    font-size: 2.5rem; 
-    font-weight: 700; 
-    margin-bottom: 1rem; 
-    color: var(--text);
+.main-hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 24px;
     line-height: 1.2;
 }
 
-.landing .section-subtitle { 
-    font-size: 1.2rem; 
-    color: var(--text-light); 
-    max-width: 600px; 
+.main-hero p {
+    font-size: 1.3rem;
+    max-width: 700px;
+    margin: 0 auto 40px;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+/* Секция деталей */
+.details-section {
+    padding: 80px 20px;
+    background: var(--surface);
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
     margin: 0 auto;
-    line-height: 1.5;
 }
 
-.landing .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-.landing .service-card { background: var(--surface); border-radius: 12px; padding: 2.5rem 2rem; box-shadow: var(--shadow); transition: all 0.3s ease; text-align: center; }
-.landing .service-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-.landing .service-icon { font-size: 3rem; margin-bottom: 1.5rem; display: block; }
-.landing .service-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; }
-.landing .service-description { color: var(--text-light); margin-bottom: 1.5rem; }
-.landing .service-features { list-style: none; text-align: left; }
-.landing .service-features li { padding: 0.5rem 0; border-bottom: 1px solid var(--border); position: relative; padding-left: 1.5rem; }
-.landing .service-features li:before { content: "✓"; position: absolute; left: 0; color: var(--success); font-weight: bold; }
+.detail-card {
+    text-align: center;
+    padding: 40px 30px;
+    background: var(--background);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
 
-/* Portfolio */
-.landing .portfolio { background: var(--surface); }
-.landing .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; }
-.landing .portfolio-card { border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); transition: all 0.3s ease; }
-.landing .portfolio-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-.landing .portfolio-image { height: 250px; background: var(--border); background-size: cover; background-position: center; }
-.landing .portfolio-content { padding: 1.5rem; }
-.landing .portfolio-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
-.landing .portfolio-category { color: var(--primary); font-weight: 500; margin-bottom: 1rem; display: block; }
-.landing .portfolio-description { color: var(--text-light); }
+.detail-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
 
-/* Stats */
-.landing .stats { margin-top: 4rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; }
-.landing .stat-card { background: var(--surface); border-radius: 16px; padding: 3rem 2rem; box-shadow: var(--shadow); text-align: center; }
-.landing .stat-number { color: var(--primary); font-weight: 800; font-size: 3rem; line-height: 1; margin-bottom: 1rem; }
-.landing .stat-label { color: var(--text-light); font-size: 1.25rem; font-weight: 600; }
+.detail-icon {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
 
-/* Process */
-.landing .process-steps { display: flex; justify-content: space-between; position: relative; margin: 3rem 0; }
-.landing .process-steps::before { content: ''; position: absolute; top: 30px; left: 0; right: 0; height: 2px; background: var(--border); z-index: 1; }
-.landing .process-step { text-align: center; position: relative; z-index: 2; flex: 1; }
-.landing .step-number { width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; margin: 0 auto 1rem; }
-.landing .step-title { font-weight: 600; margin-bottom: 0.5rem; }
-.landing .step-description { color: var(--text-light); font-size: 0.9rem; }
+.detail-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text);
+}
 
-/* CTA */
-.landing .cta { background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%); color: white; padding: 5rem 0; text-align: center; }
-.landing .cta-content { max-width: 700px; margin: 0 auto; }
-.landing .cta h2 { font-size: 2.5rem; margin-bottom: 1.5rem; }
-.landing .cta p { font-size: 1.2rem; margin-bottom: 2.5rem; opacity: 0.9; }
+.detail-description {
+    color: var(--text-light);
+    font-size: 1rem;
+    line-height: 1.6;
+}
 
-/* Footer */
-.landing footer { background: #1e293b; color: white; padding: 4rem 0 2rem; }
-.landing .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem; }
-.landing .footer-column h3 { font-size: 1.25rem; margin-bottom: 1.5rem; position: relative; padding-bottom: 0.5rem; }
-.landing .footer-column h3::after { content: ''; position: absolute; bottom: 0; left: 0; width: 50px; height: 2px; background: var(--primary); }
-.landing .footer-links { list-style: none; }
-.landing .footer-links li { margin-bottom: 0.8rem; }
-.landing .footer-links a { color: #cbd5e1; text-decoration: none; transition: color 0.2s ease; }
-.landing .footer-links a:hover { color: white; }
-.landing .contact-info { list-style: none; }
-.landing .contact-info li { margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 0.5rem; }
-.landing .contact-info .icon { font-size: 1.2rem; margin-top: 0.2rem; }
-.landing .social-links { display: flex; gap: 1rem; margin-top: 1.5rem; }
-.landing .social-link { width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
-.landing .social-link:hover { background: var(--primary); transform: translateY(-2px); }
-.landing .footer-bottom { border-top: 1px solid #374151; padding-top: 2rem; text-align: center; color: #9ca3af; font-size: 0.9rem; }
+/* Секция ценностей */
+.values-section {
+    padding: 80px 20px;
+    background: var(--background);
+}
 
-/* Mobile First Responsive Design */
+.values-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
 
-/* Small mobile devices (320px - 480px) */
+.values-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 50px;
+    color: var(--text);
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.value-item {
+    padding: 30px;
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.value-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 24px;
+    color: white;
+}
+
+.value-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.value-desc {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* CTA секция */
+.cta-section {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.cta-description {
+    margin-bottom: 40px;
+    opacity: 0.9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.cta-button {
+    display: inline-block;
+    background: white;
+    color: var(--primary);
+    padding: 16px 32px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .main-hero {
+        padding: 80px 20px;
+    }
+
+    .main-hero h1 {
+        font-size: 2.2rem;
+    }
+
+    .main-hero p {
+        font-size: 1.1rem;
+    }
+
+    .details-section,
+    .values-section,
+    .cta-section {
+        padding: 60px 20px;
+    }
+
+    .details-grid,
+    .values-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .cta-title {
+        font-size: 1.8rem;
+    }
+
+    .values-title {
+        font-size: 1.8rem;
+    }
+
+    .detail-card {
+        padding: 30px 20px;
+    }
+}
+
 @media (max-width: 480px) {
-    .landing .container {
-        padding: 0 16px;
+    .main-hero {
+        padding: 60px 20px;
     }
-    
-    .landing .header-content {
-        flex-direction: column;
-        gap: 12px;
-        padding: 12px 0;
+
+    .main-hero h1 {
+        font-size: 1.75rem;
     }
-    
-    .landing nav ul {
-        flex-direction: column;
-        gap: 8px;
-        text-align: center;
+
+    .main-hero p {
+        font-size: 1rem;
     }
-    
-    .landing .hero {
-        padding: 40px 0;
+
+    .cta-title,
+    .values-title {
+        font-size: 1.5rem;
     }
-    
-    .landing .hero h1 {
-        font-size: 24px;
-        line-height: 1.2;
-        margin-bottom: 16px;
+
+    .cta-description {
+        font-size: 1rem;
     }
-    
-    .landing .hero p {
-        font-size: 16px;
-        margin-bottom: 24px;
+
+    .detail-icon {
+        font-size: 2rem;
     }
-    
-    .landing .hero-actions {
-        flex-direction: column;
-        gap: 12px;
+
+    .detail-title {
+        font-size: 1.2rem;
     }
-    
-    .landing .hero .btn {
-        width: 100%;
-        padding: 12px 16px;
-        font-size: 16px;
-    }
-    
-    .landing .section {
-        padding: 40px 0;
-    }
-    
-    .landing .section-header {
-        margin-bottom: 32px;
-        text-align: center;
-    }
-    
-    .landing .section-title {
-        font-size: 24px;
-        line-height: 1.3;
-        text-align: center;
-        width: 100%;
-    }
-    
-    .landing .section-subtitle {
-        font-size: 16px;
-        margin-top: 12px;
-        text-align: center;
-        width: 100%;
-    }
-    
-    .landing .services-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .landing .service-card {
-        padding: 20px 16px;
-    }
-    
-    .landing .service-icon {
-        font-size: 32px;
-        margin-bottom: 12px;
-    }
-    
-    .landing .service-title {
-        font-size: 18px;
-        margin-bottom: 8px;
-    }
-    
-    .landing .service-description {
-        font-size: 14px;
-        margin-bottom: 16px;
-    }
-    
-    .landing .portfolio-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .landing .portfolio-image {
-        height: 200px;
-    }
-    
-    .landing .portfolio-content {
-        padding: 16px;
-    }
-    
-    .landing .portfolio-title {
-        font-size: 16px;
-    }
-    
-    .landing .portfolio-category {
-        font-size: 12px;
-    }
-    
-    .landing .portfolio-description {
-        font-size: 14px;
-    }
-    
-    .landing .stats {
-        grid-template-columns: 1fr;
-        gap: 16px;
-        margin-top: 32px;
-    }
-    
-    .landing .stat-card {
-        padding: 20px 16px;
-    }
-    
-    .landing .stat-number {
-        font-size: 32px;
-    }
-    
-    .landing .stat-label {
-        font-size: 14px;
-    }
-    
-    .landing .process-steps {
-        flex-direction: column;
-        gap: 24px;
-    }
-    
-    .landing .process-steps::before {
-        display: none;
-    }
-    
-    .landing .step-number {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-    }
-    
-    .landing .step-title {
-        font-size: 16px;
-    }
-    
-    .landing .step-description {
-        font-size: 14px;
-    }
-    
-    .landing .cta {
-        padding: 40px 0;
-    }
-    
-    .landing .cta h2 {
-        font-size: 24px;
-    }
-    
-    .landing .cta p {
-        font-size: 16px;
-    }
-    
-    .landing footer {
-        padding: 40px 0 20px;
-    }
-    
-    .landing .footer-content {
-        grid-template-columns: 1fr;
-        gap: 24px;
-        margin-bottom: 24px;
-    }
-    
-    .landing .footer-column h3 {
-        font-size: 18px;
-    }
-    
-    .landing .footer-links li,
-    .landing .contact-info li {
-        margin-bottom: 8px;
-    }
-    
-    .landing .tz-banner {
-        padding: 24px 0;
-        margin: 16px 0;
-    }
-    
-    .landing .tz-banner h2 {
+
+    .value-icon {
+        width: 50px;
+        height: 50px;
         font-size: 20px;
-    }
-    
-    .landing .tz-banner p {
-        font-size: 14px;
-    }
-}
-
-/* Medium mobile devices (481px - 768px) */
-@media (min-width: 481px) and (max-width: 768px) {
-    .landing .container {
-        padding: 0 20px;
-    }
-    
-    .landing .header-content {
-        flex-direction: column;
-        gap: 16px;
-        padding: 16px 0;
-    }
-    
-    .landing nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 16px;
-    }
-    
-    .landing .hero {
-        padding: 60px 0;
-    }
-    
-    .landing .hero h1 {
-        font-size: 32px;
-        line-height: 1.2;
-    }
-    
-    .landing .hero p {
-        font-size: 18px;
-    }
-    
-    .landing .hero-actions {
-        flex-direction: row;
-        justify-content: center;
-        gap: 16px;
-    }
-    
-    .landing .hero .btn {
-        flex: 1;
-        max-width: 200px;
-    }
-    
-    .landing .section {
-        padding: 60px 0;
-    }
-    
-    .landing .section-header {
-        text-align: center;
-    }
-    
-    .landing .section-title {
-        font-size: 28px;
-        text-align: center;
-        width: 100%;
-    }
-    
-    .landing .section-subtitle {
-        font-size: 18px;
-        text-align: center;
-        width: 100%;
-    }
-    
-    .landing .services-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-    
-    .landing .service-card {
-        padding: 24px 20px;
-    }
-    
-    .landing .portfolio-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-    
-    .landing .stats {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-    
-    .landing .process-steps {
-        flex-direction: column;
-        gap: 32px;
-    }
-    
-    .landing .process-steps::before {
-        display: none;
-    }
-    
-    .landing .footer-content {
-        grid-template-columns: 1fr;
-        gap: 32px;
-    }
-}
-
-/* Tablets (769px - 1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .landing .container {
-        padding: 0 24px;
-    }
-    
-    .landing .hero {
-        padding: 80px 0;
-    }
-    
-    .landing .hero h1 {
-        font-size: 40px;
-    }
-    
-    .landing .section {
-        padding: 80px 0;
-    }
-    
-    .landing .section-title {
-        font-size: 32px;
-    }
-    
-    .landing .services-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
-    
-    .landing .portfolio-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
-    
-    .landing .stats {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
-    
-    .landing .process-steps {
-        flex-direction: row;
-        gap: 16px;
-    }
-    
-    .landing .process-steps::before {
-        display: block;
-    }
-    
-    .landing .footer-content {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 32px;
-    }
-}
-
-/* Desktop (1025px+) */
-@media (min-width: 1025px) {
-    .landing .container {
-        padding: 0 32px;
-    }
-    
-    .landing .hero {
-        padding: 100px 0;
-    }
-    
-    .landing .hero h1 {
-        font-size: 48px;
-    }
-    
-    .landing .section {
-        padding: 100px 0;
-    }
-    
-    .landing .section-title {
-        font-size: 40px;
-    }
-    
-    .landing .services-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 32px;
-    }
-    
-    .landing .portfolio-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 32px;
-    }
-    
-    .landing .stats {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 32px;
-    }
-    
-    .landing .process-steps {
-        flex-direction: row;
-        gap: 24px;
-    }
-    
-    .landing .footer-content {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 40px;
-    }
-}
-
-/* TZ Banner */
-.landing .tz-banner { 
-    background: linear-gradient(135deg, #f59e0b 0%, #e58e0b 100%); 
-    color: white; 
-    padding: 3rem 0; 
-    text-align: center; 
-    margin: 2rem 0; 
-    border-radius: 12px; 
-    box-shadow: var(--shadow-lg); 
-}
-
-.landing .tz-banner h2 { 
-    font-size: 2.2rem; 
-    margin-bottom: 1rem; 
-}
-
-.landing .tz-banner p { 
-    font-size: 1.2rem; 
-    margin-bottom: 2rem; 
-    max-width: 600px; 
-    margin-left: auto; 
-    margin-right: auto; 
-}
-
-/* Touch-friendly improvements */
-@media (max-width: 768px) {
-    .landing .btn {
-        min-height: 44px;
-        touch-action: manipulation;
-    }
-    
-    .landing .service-card,
-    .landing .portfolio-card,
-    .landing .stat-card {
-        touch-action: manipulation;
-    }
-    
-    .landing .social-link {
-        min-width: 44px;
-        min-height: 44px;
-    }
-}
-
-/* Improved typography for mobile */
-@media (max-width: 768px) {
-    .landing .hero h1 {
-        word-break: break-word;
-        hyphens: auto;
-    }
-    
-    .landing .section-title {
-        word-break: break-word;
-    }
-    
-    .landing .service-title,
-    .landing .portfolio-title {
-        line-height: 1.4;
-    }
-}
-
-/* Landscape orientation optimizations */
-@media (max-width: 768px) and (orientation: landscape) {
-    .landing .hero {
-        padding: 40px 0;
-    }
-    
-    .landing .section {
-        padding: 40px 0;
-    }
-    
-    .landing .hero h1 {
-        font-size: 28px;
-    }
-}
-
-/* High DPI displays */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .landing .service-icon,
-    .landing .step-number {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
-}
-
-/* Smooth scrolling for better UX */
-@media (prefers-reduced-motion: no-preference) {
-    .landing {
-        scroll-behavior: smooth;
-    }
-}
-
-/* Reduced motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-    .landing .service-card,
-    .landing .portfolio-card,
-    .landing .stat-card {
-        transition: none;
-    }
-    
-    .landing .btn {
-        transition: none;
     }
 }
 

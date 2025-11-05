@@ -1,0 +1,84 @@
+{
+  "name": "Дизайн360 - Студия дизайна интерьеров",
+  "short_name": "Дизайн360",
+  "description": "Профессиональная студия дизайна интерьеров. Создаем уникальные пространства для жизни и работы.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/AppIcons/Assets.xcassets/AppIcon.appiconset/72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/AppIcons/Assets.xcassets/AppIcon.appiconset/96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/AppIcons/Assets.xcassets/AppIcon.appiconset/128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/AppIcons/Assets.xcassets/AppIcon.appiconset/144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/AppIcons/Assets.xcassets/AppIcon.appiconset/152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/AppIcons/Assets.xcassets/AppIcon.appiconset/192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/AppIcons/Assets.xcassets/AppIcon.appiconset/384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/AppIcons/Assets.xcassets/AppIcon.appiconset/512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["design", "interior", "business"],
+  "lang": "ru",
+  "dir": "ltr",
+  "scope": "/",
+  "id": "design360-pwa",
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "shortcuts": [
+    {
+      "name": "Техническое задание",
+      "short_name": "ТЗ",
+      "description": "Создать техническое задание",
+      "url": "/tz",
+      "icons": [
+        {
+          "src": "/icons/icon-96x96.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}

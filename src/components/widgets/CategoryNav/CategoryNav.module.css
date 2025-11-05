@@ -1,0 +1,109 @@
+.categoryNav {
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-gray-200);
+  position: sticky;
+  top: 73px;
+  z-index: var(--z-index-fixed);
+}
+
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.categories {
+  display: flex;
+  gap: var(--spacing-md);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.categories::-webkit-scrollbar {
+  display: none;
+}
+
+.category {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-700);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+/* Tabs style */
+.tabs .category {
+  border-bottom: 2px solid transparent;
+}
+
+.tabs .category:hover {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary-light);
+}
+
+.tabs .category.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+/* Pills style */
+.pills .category {
+  border-radius: var(--radius-full);
+  background-color: var(--color-gray-100);
+}
+
+.pills .category:hover {
+  background-color: var(--color-gray-200);
+  color: var(--color-primary);
+}
+
+.pills .category.active {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+/* Buttons style */
+.buttons .category {
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-md);
+}
+
+.buttons .category:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.buttons .category.active {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.categoryName {
+  white-space: nowrap;
+}
+
+.categoryCount {
+  font-size: var(--font-size-sm);
+  opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .category {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+}
+
+
+

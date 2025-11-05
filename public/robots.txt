@@ -1,0 +1,9 @@
+# https://www.robotstxt.org/
+User-agent: *
+Allow: /
+
+# Disallow API routes from indexing
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://design360.ru/sitemap.xml

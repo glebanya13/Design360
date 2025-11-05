@@ -1,0 +1,30 @@
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.link {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.current {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.sep {
+  color: var(--text-light);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+

@@ -1,0 +1,43 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.icon {
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.text {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-900);
+  white-space: nowrap;
+}
+
+/* Sizes */
+.logo.sm .text {
+  font-size: var(--font-size-base);
+}
+
+.logo.md .text {
+  font-size: var(--font-size-xl);
+}
+
+.logo.lg .text {
+  font-size: var(--font-size-2xl);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .logo.md .text {
+    font-size: var(--font-size-lg);
+  }
+
+  .logo.lg .text {
+    font-size: var(--font-size-xl);
+  }
+}
+
+
+

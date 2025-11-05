@@ -1,0 +1,231 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-index-sticky);
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-md) var(--container-padding);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-gray-900);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  transition: color var(--transition-fast);
+}
+
+.logoLink:hover {
+  color: var(--color-primary);
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+.navLink {
+  position: relative;
+  color: var(--color-gray-700);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast);
+  padding: var(--spacing-xs) 0;
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+  transition: width var(--transition-fast);
+}
+
+.navLink:hover {
+  color: var(--color-primary);
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+.navLink.active {
+  color: var(--color-primary);
+}
+
+.navLink.active::after {
+  width: 100%;
+}
+
+.ctaButton {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+}
+
+.ctaButton:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Burger Menu */
+.burgerMenu {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+}
+
+.burgerLine {
+  width: 24px;
+  height: 2px;
+  background-color: var(--color-gray-700);
+  transition: all var(--transition-fast);
+}
+
+.burgerMenu.open .burgerLine:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.burgerMenu.open .burgerLine:nth-child(2) {
+  opacity: 0;
+}
+
+.burgerMenu.open .burgerLine:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Mobile Menu */
+.mobileMenuOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: var(--z-index-modal-backdrop);
+}
+
+.mobileMenu {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(80%, 320px);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-2xl);
+  z-index: var(--z-index-modal);
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  overflow-y: auto;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.mobileMenuClose {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: none;
+  border: none;
+  font-size: var(--font-size-3xl);
+  color: var(--color-gray-700);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  line-height: 1;
+  transition: color var(--transition-fast);
+}
+
+.mobileMenuClose:hover {
+  color: var(--color-primary);
+}
+
+.mobileNavLink {
+  display: block;
+  padding: var(--spacing-md) 0;
+  color: var(--color-gray-700);
+  text-decoration: none;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  border-bottom: 1px solid var(--color-gray-200);
+  transition: color var(--transition-fast);
+}
+
+.mobileNavLink:hover,
+.mobileNavLink.active {
+  color: var(--color-primary);
+}
+
+.mobileCtaButton {
+  display: block;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius-md);
+  text-align: center;
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  margin-top: var(--spacing-md);
+  transition: background-color var(--transition-fast);
+}
+
+.mobileCtaButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .nav {
+    display: none;
+  }
+
+  .burgerMenu {
+    display: flex;
+  }
+
+  .mobileMenuOverlay {
+    display: block;
+  }
+
+  .mobileMenu {
+    display: flex;
+  }
+}
+
+
+
