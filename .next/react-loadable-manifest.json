@@ -1,1 +1,11 @@
-{}
+{
+  "app/(public)/catalog/page.tsx -> @/lib/firebase/services": {
+    "id": 822,
+    "files": [
+      "static/chunks/7508b87c-78bda6b4096c68e6.js",
+      "static/chunks/eaa9a3dd-475eb0c3f80b574a.js",
+      "static/chunks/351-84069479962aed9a.js",
+      "static/chunks/822.be06224238f97eae.js"
+    ]
+  }
+}

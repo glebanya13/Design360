@@ -1,0 +1,141 @@
+@import "./variables.css";
+
+.packages-page {
+  min-height: 100vh;
+  background: var(--background);
+  padding: 2rem 0;
+}
+
+.packages-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.packages-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.packages-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 1rem;
+}
+
+.packages-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-light);
+  margin: 0;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.packages-loading {
+  text-align: center;
+  padding: 4rem;
+  color: var(--text-light);
+  font-size: 1.125rem;
+}
+
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.package-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.package-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.package-card.highlighted {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-color: var(--primary);
+  border-width: 2px;
+}
+
+.package-header {
+  margin-bottom: 1.5rem;
+}
+
+.package-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 0.5rem;
+}
+
+.package-audience {
+  font-size: 0.9375rem;
+  color: var(--text-light);
+  margin: 0;
+}
+
+.package-features {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.package-visualizations {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+.package-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.package-description {
+  font-size: 0.9375rem;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+  flex: 1;
+}
+
+.package-button {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .packages-title {
+    font-size: 2rem;
+  }
+
+  .packages-subtitle {
+    font-size: 1rem;
+  }
+
+  .packages-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .package-card {
+    padding: 1.5rem;
+  }
+}
+

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CategoriesNav from '@/components/widgets/CategoriesNav/CategoriesNav';
+import type { Product } from '@/lib/firebase/services';
 import '@/styles/catalog.css';
-import productsData from '@/data/products.json';
 
 const priceFormatter = new Intl.NumberFormat('ru-RU');
 
@@ -12,6 +12,9 @@ export default function CatalogPage() {
     const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
     const [viewMode, setViewMode] = useState('grid');
     const [currentPage, setCurrentPage] = useState(1);
+    const [categoryNavItems, setCategoryNavItems] = useState<string[]>(['Все категории']);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
     const itemsPerPage = 6;
 
     const [filters, setFilters] = useState({
@@ -20,35 +23,82 @@ export default function CatalogPage() {
         category: '',
     });
 
-    const categoryNavItems = [
-        'Все категории',
-        'Мебель',
-        'Декор',
-        'Освещение',
-        'Текстиль',
-        'Для бизнеса',
-    ];
+    useEffect(() => {
+        // Динамический импорт Firebase только на клиенте
+        if (typeof window === 'undefined') {
+            return;
+        }
 
-    const products = productsData.products;
+        const loadData = async () => {
+            try {
+                const { catalogCategoriesService, productsService } = await import('@/lib/firebase/services');
+                
+                // Загружаем категории
+                try {
+                    const categories = await catalogCategoriesService.getAll();
+                    const categoryNames = ['Все категории', ...categories.map((cat: any) => cat.name)];
+                    const uniqueCategories = Array.from(new Set(categoryNames));
+                    setCategoryNavItems(uniqueCategories);
+                } catch (error) {
+                    console.error('Ошибка загрузки категорий:', error);
+                    setCategoryNavItems(['Все категории', 'Мебель', 'Декор', 'Освещение', 'Текстиль', 'Для бизнеса']);
+                }
+
+                // Загружаем продукты
+                try {
+                    setLoading(true);
+                    const data = await productsService.getAll();
+                    setProducts(data);
+                } catch (error) {
+                    console.error('Ошибка загрузки продуктов:', error);
+                    setProducts([]);
+                } finally {
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки модулей Firebase:', error);
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, []);
 
     // Фильтрация
     const filteredProducts = products.filter((product) => {
         let match = true;
 
-        if (activeCategory !== 'Все категории') {
-            match = match && product.category === activeCategory;
+        // Фильтр по категории (приоритет у фильтров, затем навигация)
+        const categoryFilter = filters.category || (activeCategory !== 'Все категории' ? activeCategory : '');
+        if (categoryFilter) {
+            match = match && product.category === categoryFilter;
         }
 
-        if (filters.minPrice) {
-            match = match && product.price >= parseInt(filters.minPrice);
+        // Фильтр по минимальной цене
+        if (filters.minPrice && filters.minPrice !== '') {
+            const minPrice = parseInt(filters.minPrice);
+            if (!isNaN(minPrice)) {
+                match = match && product.price >= minPrice;
+            }
         }
 
-        if (filters.maxPrice) {
-            match = match && product.price <= parseInt(filters.maxPrice);
+        // Фильтр по максимальной цене
+        if (filters.maxPrice && filters.maxPrice !== '') {
+            const maxPrice = parseInt(filters.maxPrice);
+            if (!isNaN(maxPrice)) {
+                match = match && product.price <= maxPrice;
+            }
         }
 
         return match;
     });
+
+    const handleApplyFilters = () => {
+        if (filters.category) {
+            setActiveCategory(filters.category);
+        }
+        setCurrentPage(1); // Сбрасываем на первую страницу при применении фильтров
+    };
 
     // Пагинация
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -108,25 +158,30 @@ export default function CatalogPage() {
                             <div className="filter-group">
                                 <label htmlFor="price-range">Цена, ₽</label>
                                 <div className="price-inputs">
-                                    <input
-                                        type="number"
-                                        id="min-price"
-                                        placeholder="0"
-                                        value={filters.minPrice}
-                                        onChange={(e) =>
-                                            setFilters({ ...filters, minPrice: e.target.value })
-                                        }
-                                    />
-                                    <span>-</span>
-                                    <input
-                                        type="number"
-                                        id="max-price"
-                                        placeholder="100000"
-                                        value={filters.maxPrice}
-                                        onChange={(e) =>
-                                            setFilters({ ...filters, maxPrice: e.target.value })
-                                        }
-                                    />
+                                    <div className="price-input-wrapper">
+                                        <label htmlFor="min-price" className="price-input-label">От</label>
+                                        <input
+                                            type="number"
+                                            id="min-price"
+                                            placeholder="0"
+                                            value={filters.minPrice}
+                                            onChange={(e) =>
+                                                setFilters({ ...filters, minPrice: e.target.value })
+                                            }
+                                        />
+                                    </div>
+                                    <div className="price-input-wrapper">
+                                        <label htmlFor="max-price" className="price-input-label">До</label>
+                                        <input
+                                            type="number"
+                                            id="max-price"
+                                            placeholder="100000"
+                                            value={filters.maxPrice}
+                                            onChange={(e) =>
+                                                setFilters({ ...filters, maxPrice: e.target.value })
+                                            }
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
@@ -140,19 +195,28 @@ export default function CatalogPage() {
                                     }
                                 >
                                     <option value="">Все категории</option>
-                                    <option value="Мебель">Мебель</option>
-                                    <option value="Декор">Декор</option>
-                                    <option value="Освещение">Освещение</option>
-                                    <option value="Текстиль">Текстиль</option>
+                                    {categoryNavItems
+                                        .filter(cat => cat !== 'Все категории')
+                                        .map((cat, index) => (
+                                            <option key={`${cat}-${index}`} value={cat}>{cat}</option>
+                                        ))
+                                    }
                                 </select>
                             </div>
 
-                            <button className="filter-btn filter-apply">Применить фильтры</button>
+                            <button 
+                                className="filter-btn filter-apply"
+                                onClick={handleApplyFilters}
+                            >
+                                Применить фильтры
+                            </button>
                             <button
                                 className="filter-btn filter-reset"
-                                onClick={() =>
-                                    setFilters({ minPrice: '', maxPrice: '', category: '' })
-                                }
+                                onClick={() => {
+                                    setFilters({ minPrice: '', maxPrice: '', category: '' });
+                                    setActiveCategory('Все категории');
+                                    setCurrentPage(1);
+                                }}
                             >
                                 Сбросить
                             </button>
@@ -189,7 +253,16 @@ export default function CatalogPage() {
                             className={`products-grid ${viewMode === 'list' ? 'list-view' : ''
                                 }`}
                         >
-                            {paginatedProducts.map((product) => (
+                            {loading ? (
+                                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
+                                    Загрузка товаров...
+                                </div>
+                            ) : paginatedProducts.length === 0 ? (
+                                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
+                                    Товары не найдены
+                                </div>
+                            ) : (
+                                paginatedProducts.map((product) => (
                                 <div
                                     key={product.id}
                                     className={`product-card ${viewMode === 'list' ? 'list-item' : ''
@@ -211,7 +284,8 @@ export default function CatalogPage() {
                                         <button className="btn btn-outline">Подробнее</button>
                                     </div>
                                 </div>
-                            ))}
+                            ))
+                            )}
                         </div>
 
                         {totalPages > 1 && (

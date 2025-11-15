@@ -1,9 +1,20 @@
 {
-  "/(public)/realtors/page": "app/(public)/realtors/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(admin)/admin/catalog-categories/page": "app/(admin)/admin/catalog-categories/page.js",
+  "/(admin)/admin/service-categories/page": "app/(admin)/admin/service-categories/page.js",
+  "/(admin)/admin/import-data/page": "app/(admin)/admin/import-data/page.js",
+  "/(admin)/admin/settings/page": "app/(admin)/admin/settings/page.js",
+  "/(admin)/admin/page": "app/(admin)/admin/page.js",
+  "/(admin)/admin/services/page": "app/(admin)/admin/services/page.js",
+  "/(admin)/admin/products/page": "app/(admin)/admin/products/page.js",
+  "/(admin)/admin/packages/page": "app/(admin)/admin/packages/page.js",
+  "/(public)/elektrosnabzhenie/page": "app/(public)/elektrosnabzhenie/page.js",
   "/(public)/page": "app/(public)/page.js",
+  "/(public)/furniture/page": "app/(public)/furniture/page.js",
+  "/(public)/design-interior/page": "app/(public)/design-interior/page.js",
+  "/(public)/realtors/page": "app/(public)/realtors/page.js",
   "/(public)/catalog/page": "app/(public)/catalog/page.js",
   "/(public)/services/page": "app/(public)/services/page.js",
-  "/(public)/elektrosnabzhenie/page": "app/(public)/elektrosnabzhenie/page.js",
-  "/(public)/design-interior/page": "app/(public)/design-interior/page.js",
-  "/(public)/tz/page": "app/(public)/tz/page.js"
+  "/(public)/tz/page": "app/(public)/tz/page.js",
+  "/(public)/visualizations/page": "app/(public)/visualizations/page.js"
 }

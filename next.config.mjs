@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'export',
   trailingSlash: false,
   images: {
     unoptimized: true,
@@ -13,7 +12,6 @@ const nextConfig = {
       },
     ],
   },
-  // Оптимизация для production
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },

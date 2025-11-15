@@ -144,7 +144,6 @@ export function useFormState() {
   }, [currentStep, formData]);
 
   const validateStepsUpTo = useCallback((step: number): boolean => {
-    // Simplified validation for navigation
     return true;
   }, []);
 

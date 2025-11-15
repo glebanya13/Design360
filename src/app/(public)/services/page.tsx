@@ -1,37 +1,67 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import CategoriesNav from '@/components/widgets/CategoriesNav/CategoriesNav';
+import { serviceCategoriesService } from '@/lib/firebase/services';
 import '@/styles/Services.css';
 
 export default function ServicesPage() {
     const [selectedSection, setSelectedSection] = useState('planning');
+    const [categoryNavItems, setCategoryNavItems] = useState<string[]>(['Все услуги']);
     const router = useRouter();
 
-    const categoryNavItems = [
-        'Все услуги',
-        'Дизайн интерьера',
-        'Проектирование',
-        'Консультации',
-        '3D визуализация',
-        'Авторский надзор',
-        'Для бизнеса',
-        'Для профессионалов',
-        'Электроснабжение',
-    ];
+    useEffect(() => {
+        loadCategories();
+    }, []);
 
-    const handleCategoryChange = (category: string) => {
+    const loadCategories = async () => {
+        try {
+            const categories = await serviceCategoriesService.getAll();
+            const categoryNames = ['Все услуги', ...categories.map(cat => cat.name)];
+            setCategoryNavItems(categoryNames);
+        } catch (error) {
+            console.error('Ошибка загрузки категорий:', error);
+            // Используем значения по умолчанию при ошибке
+            setCategoryNavItems([
+                'Все услуги',
+                'Дизайн интерьера',
+                'Проектирование',
+                'Консультации',
+                '3D визуализация',
+                'Авторский надзор',
+                'Для бизнеса',
+                'Для профессионалов',
+                'Электроснабжение',
+            ]);
+        }
+    };
+
+    const handleCategoryChange = async (category: string) => {
         if (category === 'Все услуги') {
             // Уже на этой странице
             return;
-        } else if (category === 'Дизайн интерьера') {
-            router.push('/design-interior');
-        } else if (category === 'Электроснабжение') {
-            router.push('/elektrosnabzhenie');
         }
-        // Для остальных категорий можно добавить переходы по мере необходимости
+        
+        // Ищем категорию с маршрутом
+        try {
+            const categories = await serviceCategoriesService.getAll();
+            const foundCategory = categories.find(cat => cat.name === category);
+            
+            if (foundCategory?.route) {
+                router.push(foundCategory.route);
+            } else {
+                // Fallback для старых категорий
+                if (category === 'Дизайн интерьера') {
+                    router.push('/design-interior');
+                } else if (category === 'Электроснабжение') {
+                    router.push('/elektrosnabzhenie');
+                }
+            }
+        } catch (error) {
+            console.error('Ошибка при переходе:', error);
+        }
     };
 
     const popularServices = [

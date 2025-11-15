@@ -1,53 +1,70 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { packagesService, Package } from '@/lib/firebase/services';
 import '@/styles/realtors.css';
 
 export default function RealtorsPage() {
     const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
+    const [packages, setPackages] = useState<Package[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const plans = [
-        {
-            id: 'basic',
-            title: 'Базовый',
-            subtitle: 'Для единичных заказов',
-            qty: '1',
-            price: '1 390',
-            description: 'Оплатите и получите готовый файл JPG/PNG высокого качества',
-            featured: false,
-        },
-        {
-            id: 'standard',
-            title: 'Стандарт',
-            subtitle: 'Для малого агентства',
-            qty: '3',
-            price: '3 900',
-            description: 'Оптимально для 2–3 объектов — выгоднее, чем поштучно',
-            featured: false,
-        },
-        {
-            id: 'pro',
-            title: 'Профи',
-            subtitle: 'Для активных риелторов',
-            qty: '5',
-            price: '6 250',
-            description: 'Лучшее соотношение цена/объём для регулярных показов',
-            featured: true,
-        },
-        {
-            id: 'premium',
-            title: 'Премиум',
-            subtitle: 'Для агентств и постоянных партнёров',
-            qty: '10+',
-            price: 'от 1 190',
-            priceUnit: ' / шт.',
-            description:
-                'Снижение цены при оптовых партиях — укажите потребность и мы предложим персональное предложение',
-            featured: false,
-        },
-    ];
+    useEffect(() => {
+        loadPackages();
+    }, []);
+
+    const loadPackages = async () => {
+        try {
+            setLoading(true);
+            const data = await packagesService.getAll();
+            setPackages(data);
+        } catch (error) {
+            console.error('Ошибка загрузки пакетов:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Преобразуем пакеты из Firebase в формат для отображения
+    const plans = packages.map((pkg) => {
+        const visualizations = typeof pkg.visualizations === 'string' 
+            ? pkg.visualizations 
+            : pkg.visualizations.toString();
+        
+        // Парсим цену для извлечения числа и единицы
+        // Обрабатываем форматы: "1390 Р", "3 900 Р", "от 1190 Р / шт."
+        const hasPriceUnit = pkg.price.includes('/ шт.') || pkg.price.includes('/шт.');
+        const hasFromPrefix = pkg.price.toLowerCase().includes('от');
+        let priceNumber = '';
+        
+        if (hasPriceUnit) {
+            // Для формата "от 1190 Р / шт." извлекаем число после "от"
+            const priceMatch = pkg.price.match(/от\s*(\d[\d\s]*)/i) || pkg.price.match(/(\d[\d\s]*)/);
+            priceNumber = priceMatch ? priceMatch[1].replace(/\s/g, '') : '';
+        } else {
+            // Для обычного формата "1390 Р" или "3 900 Р"
+            const priceMatch = pkg.price.match(/(\d[\d\s]*)/);
+            priceNumber = priceMatch ? priceMatch[1].replace(/\s/g, '') : '';
+        }
+        
+        // Форматируем цену с пробелами для тысяч
+        const formattedPrice = priceNumber ? 
+            priceNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
+        
+        return {
+            id: pkg.id || '',
+            title: pkg.name,
+            subtitle: pkg.targetAudience,
+            qty: visualizations,
+            price: formattedPrice,
+            pricePrefix: hasFromPrefix ? 'от ' : '',
+            priceUnit: hasPriceUnit ? ' / шт.' : '',
+            description: pkg.description,
+            featured: pkg.highlighted || false,
+        };
+    });
 
     const benefits = [
         {
@@ -114,12 +131,51 @@ export default function RealtorsPage() {
         },
     ];
 
-    const getPlanLabel = (plan: typeof plans[0]) => {
-        if (plan.id === 'premium') {
-            return `${plan.title} — опт. цена от ${plan.price} ₽/шт.`;
+    // Функция для правильного склонения слова "визуализация"
+    const getVisualizationWord = (qty: string | number): string => {
+        const num = typeof qty === 'string' ? parseInt(qty) : qty;
+        
+        if (isNaN(num)) {
+            // Если это строка типа "10+", используем множественное число
+            return 'визуализаций';
         }
-        return `${plan.title} — ${plan.qty} визуализация${plan.qty === '1' ? '' : plan.qty === '3' ? 'и' : 'ций'}: ${plan.price} ₽`;
+        
+        // Правила склонения для русского языка
+        if (num === 1) {
+            return 'визуализация';
+        } else if (num >= 2 && num <= 4) {
+            return 'визуализации';
+        } else {
+            return 'визуализаций';
+        }
     };
+
+    const getPlanLabel = (plan: typeof plans[0]) => {
+        const visWord = getVisualizationWord(plan.qty);
+        if (plan.priceUnit) {
+            return `${plan.title} — опт. цена ${plan.pricePrefix}${plan.price} ₽/шт.`;
+        }
+        return `${plan.title} — ${plan.qty} ${visWord}: ${plan.pricePrefix}${plan.price} ₽`;
+    };
+
+    if (loading) {
+        return (
+            <>
+                <section className="realtor-hero">
+                    <h1>Увеличивайте продажи недвижимости с 3D-визуализацией</h1>
+                    <p>
+                        Превращайте обычные квартиры в желанные объекты с помощью профессиональной 3D-визуализации. Продавайте
+                        быстрее и дороже!
+                    </p>
+                </section>
+                <section className="tariff-pricing-section" id="pricing">
+                    <div className="section-header">
+                        <h2 className="section-title">Загрузка пакетов...</h2>
+                    </div>
+                </section>
+            </>
+        );
+    }
 
     return (
         <>
@@ -157,10 +213,10 @@ export default function RealtorsPage() {
 
                             <div className="tariff-features">
                                 <div className="tariff-qty">
-                                    <strong>{plan.qty}</strong> визуализация{plan.qty === '1' ? '' : plan.qty === '3' ? 'и' : 'ций'}
+                                    <strong>{plan.qty}</strong> {getVisualizationWord(plan.qty)}
                                 </div>
                                 <div className="tariff-price">
-                                    {plan.price} ₽{plan.priceUnit || ''}
+                                    {plan.pricePrefix}{plan.price} ₽{plan.priceUnit || ''}
                                 </div>
                                 <div className="tariff-muted">{plan.description}</div>
                             </div>
